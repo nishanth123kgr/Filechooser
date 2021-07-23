@@ -1,0 +1,129 @@
+#:import SwapTransition kivy.uix.screenmanager.SwapTransition
+
+<Check@MDCheckbox>:
+    group: 'group'
+    size_hint: None, None
+    size: dp(24), dp(24)
+
+<SM>
+    transition : SwapTransition()
+    First:
+    Second:
+
+
+<First>
+    name: 'scr1'
+    BoxLayout:
+        orientation: 'vertical'
+        MDToolbar:
+            title: "Photo Background Remover"
+            right_action_items: [["theme-light-dark", lambda x: app.show_theme_picker()]]
+            id: toolbar
+        FloatLayout:
+            MDCard:
+                pos_hint: {'center_x': .5,'center_y':.72}
+                size_hint: .8, .5
+                elevation: 0
+                canvas.before:
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                        source: 'remo.png'
+            MDLabel:
+                text:'Remove backgrounds 100% automatically in 5 seconds'
+                pos_hint:{'center_x':0.5, 'center_y':.35}
+                halign: 'center'
+                font_name: 'Lato-Regular.ttf'
+
+            MDFillRoundFlatIconButton:
+                id: sel_file
+                text: 'Select File'
+                icon:'file-upload'
+                pos_hint:{'center_x': .5,'center_y':.2}
+                font_name: 'Lato-Regular.ttf'
+                on_press: app.file_manager_open()
+                on_release:
+                    root.do()
+                    root.manager.current = 'scr2'
+                    root.manager.transition.direction = 'left'
+
+
+
+<Second>
+    name: 'scr2'
+    BoxLayout:
+        orientation: 'vertical'
+        MDToolbar:
+            title: "Photo Background Remover"
+            id: toolbar
+        FloatLayout:
+            MDSpinner:
+                id: spinner
+                size_hint: None, None
+                determinate: True
+                determinate_time: 5
+                size: dp(46), dp(46)
+                pos_hint: {'center_x': .5, 'center_y': .5}
+                active: False
+                on_determinate_complete: app.end()
+            MDCard:
+                id: image
+                tx: 'fds.png'
+                pos_hint: {'center_x': .5,'center_y':.8}
+                size_hint: .8, .3
+                elevation: 0
+                ii: '1.png'
+                canvas.before:
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                        source: self.ii
+            MDTextField:
+                id: save_as
+                hint_text : 'Save As'
+                pos_hint:{'center_x': .5,'center_y':.58}
+                size_hint: .5, .098
+                font_name: 'Lato-Regular.ttf'
+                text_color: '#000000'
+            MDLabel:
+                text:'Select Format'
+                pos_hint:{'center_x':0.5, 'center_y':.48}
+                halign: 'center'
+                font_name: 'Lato-Regular.ttf'
+
+            GridLayout:
+                pos_hint:{'center_x': .5,'center_y':.38}
+                size_hint: (.3,.1)
+                cols:2
+                Check:
+                    id: chk1
+                    active: False
+                    on_active: app.ext = "png"
+                MDLabel:
+                    text:'PNG'
+                    halign:'center'
+                    font_name: 'Lato-Regular.ttf'
+                Check:
+                    id: chk2
+                    active: False
+                    on_active: app.ext = "jpg"
+                MDLabel:
+                    text:'JPG'
+                    halign:'center'
+                    font_name: 'Lato-Regular.ttf'
+            MDRaisedButton:
+                id: but
+                text: "Remove"
+                pos_hint:{'center_x': .5,'center_y':.25}
+                font_name: 'Lato-Regular.ttf'
+                on_press:
+                    app.remove(save_as.text)
+            MDRaisedButton:
+                id: but2
+                text: "Back Home"
+                pos_hint:{'center_x': .5,'center_y':.15}
+                on_press:
+                    root.manager.current = 'scr1'
+                    root.manager.transition.direction = 'right'
+                    root.re()
+
